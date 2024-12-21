@@ -22,7 +22,7 @@ type User struct {
 }
 
 func (x *User) SetVerificationProperties() {
-	x.IsUserVerified = false
+	x.IsUserVerified = true
 	x.Session = generateSession(x.ID)
 }
 

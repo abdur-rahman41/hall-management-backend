@@ -74,39 +74,39 @@ func (service *authService) SignupUser(registerRequest *serializer.SignupRequest
 	return nil
 }
 
-// func (service *authService) Login(loginRequest *serializer.LoginRequest) (*serializer.LoginResponse, error) {
-// 	// Check user is verified or not
-// 	var identifier *string
-// 	// if studentId or email is not provided it gets an error from the validation in the controller layer
-// 	if loginRequest.Email != nil {
-// 		identifier = loginRequest.Email
-// 	} else {
-// 		identifier = loginRequest.StudentId
-// 	}
+func (service *authService) Login(loginRequest *serializer.LoginRequest) (*serializer.LoginResponse, error) {
+	// Check user is verified or not
+	var identifier *string
+	// if studentId or email is not provided it gets an error from the validation in the controller layer
+	if loginRequest.Email != nil {
+		identifier = loginRequest.Email
+	} else {
+		identifier = loginRequest.ID
+	}
 
-// 	user, err := service.authRepo.FindAuthorizedUserByEmailOrStudentId(identifier)
-// 	if err != nil {
-// 		return nil, err
-// 	}
+	user, err := service.authRepo.FindAuthorizedUserByEmailOrStudentId(identifier)
+	if err != nil {
+		return nil, err
+	}
 
-// 	// Check password
-// 	if err := utils.CheckPassword(user.PasswordHash, loginRequest.Password); err != nil {
-// 		return nil, err
-// 	}
+	// Check password
+	if err := utils.CheckPassword(user.Password, loginRequest.Password); err != nil {
+		return nil, err
+	}
 
-// 	// Create JWT token
-// 	accessToken, err := utils.GetJwtForUser(user)
-// 	if err != nil {
-// 		return nil, err
-// 	}
+	// Create JWT token
+	accessToken, err := utils.GetJwtForUser(user)
+	if err != nil {
+		return nil, err
+	}
 
-// 	return &serializer.LoginResponse{
-// 		Name:           user.Name,
-// 		Email:          user.Email,
-// 		StudentId:      user.StudentId,
-// 		IsUserVerified: user.IsUserVerified,
-// 		IsActive:       true,
-// 		Role:           user.Role,
-// 		AccessToken:    accessToken,
-// 	}, nil
-// }
+	return &serializer.LoginResponse{
+		Name:           user.Name,
+		Email:          user.Email,
+		StudentId:      user.ID,
+		IsUserVerified: user.IsUserVerified,
+		IsActive:       true,
+		Role:           user.Role,
+		AccessToken:    accessToken,
+	}, nil
+}

@@ -1,6 +1,10 @@
 package serializer
 
-import validation "github.com/go-ozzo/ozzo-validation"
+import (
+	"errors"
+
+	validation "github.com/go-ozzo/ozzo-validation"
+)
 
 // SignupRequest defines the request body for the signup request.
 type SignupRequest struct {
@@ -15,9 +19,9 @@ type SignupRequest struct {
 }
 
 type LoginRequest struct {
-	StudentId *string `json:"student_id,omitempty"`
-	Email     *string `json:"email,omitempty"`
-	Password  string  `json:"password"`
+	ID       *string `json:"id,omitempty"`
+	Email    *string `json:"email,omitempty"`
+	Password string  `json:"password"`
 }
 
 type LoginResponse struct {
@@ -41,5 +45,17 @@ func (request SignupRequest) Validate() error {
 		validation.Field(&request.AttachNo, validation.Required.Error("Attach Number cannot be empty"), validation.Length(8, 128)),
 		validation.Field(&request.Phone, validation.Required.Error("Phone Number cannot be empty"), validation.Length(8, 128)),
 		validation.Field(&request.Password, validation.Required.Error("Password cannot be empty"), validation.Length(8, 128)),
+	)
+}
+
+func (request LoginRequest) Validate() error {
+	return validation.ValidateStruct(&request,
+		validation.Field(&request.Password, validation.Required.Error("Password cannot be empty"), validation.Length(8, 128)),
+		validation.Field(&request.ID, validation.By(func(value interface{}) error {
+			if request.ID == nil && request.Email == nil {
+				return errors.New("must give StudentId or Email")
+			}
+			return nil
+		})),
 	)
 }

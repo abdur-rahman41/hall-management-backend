@@ -46,15 +46,15 @@ func (repo *authRepo) CreateUser(user *model.User) error {
 	return nil
 }
 
-// func (repo *authRepo) FindAuthorizedUserByEmailOrStudentId(value interface{}) (*model.User, error) {
-// 	user := &model.User{}
-// 	if err := repo.db.Where("student_id = ? OR email = ?", value, value).First(user).Error; err != nil {
-// 		return nil, err
-// 	}
+func (repo *authRepo) FindAuthorizedUserByEmailOrStudentId(value interface{}) (*model.User, error) {
+	user := &model.User{}
+	if err := repo.db.Where("id = ? OR email = ?", value, value).First(user).Error; err != nil {
+		return nil, err
+	}
 
-// 	if user.IsUserVerified == false {
-// 		return nil, &response.UserNotVerifiedError{}
-// 	}
+	if !user.IsUserVerified {
+		return nil, &response.UserNotVerifiedError{}
+	}
 
-// 	return user, nil
-// }
+	return user, nil
+}

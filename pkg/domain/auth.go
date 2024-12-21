@@ -8,10 +8,10 @@ import (
 type IAuthRepo interface {
 	DuplicateUserChecker(StudentId *string, Email *string) error
 	CreateUser(user *model.User) error
-	//FindAuthorizedUserByEmailOrStudentId(interface{}) (*model.User, error)
+	FindAuthorizedUserByEmailOrStudentId(interface{}) (*model.User, error)
 }
 
 type IAuthService interface {
 	SignupUser(registerRequest *serializer.SignupRequest) error
-	//Login(loginRequest *serializer.LoginRequest) (*serializer.LoginResponse, error)
+	Login(loginRequest *serializer.LoginRequest) (*serializer.LoginResponse, error)
 }
